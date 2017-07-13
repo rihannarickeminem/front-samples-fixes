@@ -28,6 +28,7 @@ addEventListener(document, "keyup", (e) => {
   if (e.keyCode === 27) {
     const currentModal = last(openModals);
     currentModal && currentModal.props.onRequestHide && currentModal.props.onRequestHide();
+    modalIsNotOpen(currentModal);
   }
 });
 
