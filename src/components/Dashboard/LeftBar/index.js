@@ -30,6 +30,8 @@ class DashboardLeftBar extends React.Component {
   static propTypes = {
     items: PropTypes.array.isRequired,
     itemType: PropTypes.string.isRequired,
+		setSelectedItem: PropTypes.func,
+    selectedItemId: PropTypes.string,
   };
 
   render() {
@@ -42,17 +44,9 @@ class DashboardLeftBar extends React.Component {
       </div>
     )
   }
-
   _renderItems(item, itemType) {
     const label = "";
-    return (
-      <NavLink
-        key={item._id}
-        to={`/${itemType}/${item._id}`}
-        style={entryStyle}
-        activeStyle={selectedEntryStyle}
-      >
-        <HLayout key={item._id} height="100%" alignItems="middle" gutter={7}>
+    const content = <HLayout key={item._id} height="100%" alignItems="middle" gutter={7}>
           <div
             style={{
               ...avatarStyle,
@@ -63,8 +57,28 @@ class DashboardLeftBar extends React.Component {
             <span>{fullName(item)}</span>
           </HLayoutItem>
           <span>{label}</span>
-        </HLayout>
-      </NavLink>
+        </HLayout>;
+    const wrappedContentStyle = this.props.selectedItemId===item._id ?
+      {...entryStyle, ...selectedEntryStyle }: entryStyle;
+    const wrappedContent = itemType === classrooms ?
+      <div
+        onClick={()=>this.props.setSelectedItem(item._id)}
+        style={wrappedContentStyle} >
+        {content}
+      </div> :
+      <NavLink
+        onClick={()=>this.props.setSelectedItem(item._id)}
+        to={`/${itemType}/${item._id}`}
+        style={entryStyle}
+        activeStyle={selectedEntryStyle}
+      >
+        {content}
+      </NavLink>;
+
+    return (
+      <div key={item._id} >
+        { wrappedContent }
+      </div>
     );
   }
 }
@@ -87,6 +101,7 @@ const entryStyle = {
   backgroundColor: "white",
   textDecoration: "none",
   color: "black",
+  cursor: "pointer",
 };
 
 const selectedEntryStyle = {

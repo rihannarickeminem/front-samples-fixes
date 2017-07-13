@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Component } from 'react';
 import { withRouter } from "react-router";
 import { HLayout, HLayoutItem } from "react-flexbox-layout";
 
@@ -10,50 +10,70 @@ import {
   classrooms,
 } from '../../constants';
 
-const Dashboard = props => {
-  let spotlight;
-  let selectedItemid;
-  let items;
-  let itemType;
+class Dashboard extends Component {
+  constructor(props) {
+    super(props);
+    this.setSelectedItem = this.setSelectedItem.bind(this)
+    if(this.props.students){
+      this.items = this.props.students;
+      this.itemType = students;
+    }
+    if(this.props.classrooms){
+      this.items = this.props.classrooms;
+      this.itemType = classrooms;
+    }
+    this.state = {
+      selectedItemId: '',
+      spotlight: '',
+      spotlighted: '',
+    }
+  }
+  componentDidMount(){
+    if(this.props.match.params && this.props.match.params.Id)
+      this.setSelectedItem(this.props.match.params.Id);
+  }
 
-  function setSelectedItem(type, id, SpotLight){
-    let spotlighted = props[type].find(
-      item => item._id == id
+  setSelectedItem(id){
+		let selectedItemId = id;
+    let SpotLight = this.itemType === classrooms ?
+      ClassroomSpotLight : StudentSpotLight;
+
+    let spotlighted = this.props[this.itemType].find(
+      item => item._id == selectedItemId
     )
     let spotLightProps = {};
-    let propName = type.slice(0, -1);
+
+    let propName = this.itemType.slice(0, -1);
     spotLightProps[propName] = spotlighted;
-    spotlight = <SpotLight {...spotLightProps} />;
+
+    let spotlight = <SpotLight {...spotLightProps} />;
+    this.setState({
+      ...this.state,
+      selectedItemId,
+      spotlight,
+      spotlighted,
+    });
   }
 
-  if(props.students){
-    items = props.students;
-    itemType = students;
+  render(){
+    return (
+      <HLayout width="100%" gutter={7}>
+        <HLayoutItem flexGrow={1}>
+          <SimpleLeftBar items={this.items}
+            setSelectedItem={this.setSelectedItem}
+            selectedItemId={this.state.selectedItemId}
+            itemType={this.itemType} />
+        </HLayoutItem>
+        <HLayoutItem flexGrow={1}>
+          {this.state.selectedItemId &&
+              <div style={spotLightContainerStyle}>
+                {this.state.spotlight}
+              </div>
+          }
+        </HLayoutItem>
+      </HLayout>
+    );
   }
-  if(props.classrooms){
-    items = props.classrooms;
-    itemType = classrooms;
-  }
-  if (props.match.params && props.match.params.Id) {
-    selectedItemid = props.match.params.Id;
-    const SpotLight = itemType === classrooms ?
-      ClassroomSpotLight : StudentSpotLight;
-    setSelectedItem(itemType, selectedItemid, SpotLight);
-  }
-  return (
-    <HLayout width="100%" gutter={7}>
-      <HLayoutItem flexGrow={1}>
-        <SimpleLeftBar items={items} itemType={itemType} />
-      </HLayoutItem>
-      <HLayoutItem flexGrow={1}>
-        {selectedItemid &&
-          <div style={spotLightContainerStyle}>
-            {spotlight}
-          </div>
-        }
-      </HLayoutItem>
-    </HLayout>
-  );
 };
 
 export default withRouter(Dashboard);
