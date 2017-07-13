@@ -39,7 +39,7 @@ addEventListener(document, "keyup", (e) => {
 
 function doSideEffects (modalComponent) {
   if (modalComponent.props.isOpen === false) {
-    modalIsNotOpen(modalComponent);
+    // modalIsNotOpen(modalComponent);
   } else {
     modalIsOpen(modalComponent);
   }
