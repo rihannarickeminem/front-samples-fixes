@@ -4,24 +4,49 @@ import { HLayout, HLayoutItem } from "react-flexbox-layout";
 
 import SimpleLeftBar from "components/Dashboard/LeftBar/";
 import StudentSpotLight from "components/SpotLight/Student";
+import ClassroomSpotLight from "components/SpotLight/Classroom";
+import {
+  students,
+  classrooms,
+} from '../../constants';
 
 const Dashboard = props => {
   let spotlight;
-  let selectedStudentid;
-  if (props.match.params && props.match.params.studentId) {
-    selectedStudentid = props.match.params.studentId;
-    const spotlightedStudent = props.students.find(
-      student => student._id == selectedStudentid
-    );
-    spotlight = <StudentSpotLight student={spotlightedStudent} />;
+  let selectedItemid;
+  let items;
+  let itemType;
+
+  function setSelectedItem(type, id, SpotLight){
+    let spotlighted = props[type].find(
+      item => item._id == id
+    )
+    let spotLightProps = {};
+    let propName = type.slice(0, -1);
+    spotLightProps[propName] = spotlighted;
+    spotlight = <SpotLight {...spotLightProps} />;
+  }
+
+  if(props.students){
+    items = props.students;
+    itemType = students;
+  }
+  if(props.classrooms){
+    items = props.classrooms;
+    itemType = classrooms;
+  }
+  if (props.match.params && props.match.params.Id) {
+    selectedItemid = props.match.params.Id;
+    const SpotLight = itemType === classrooms ?
+      ClassroomSpotLight : StudentSpotLight;
+    setSelectedItem(itemType, selectedItemid, SpotLight);
   }
   return (
     <HLayout width="100%" gutter={7}>
       <HLayoutItem flexGrow={1}>
-        <SimpleLeftBar students={props.students} />
+        <SimpleLeftBar items={items} itemType={itemType} />
       </HLayoutItem>
       <HLayoutItem flexGrow={1}>
-        {selectedStudentid &&
+        {selectedItemid &&
           <div style={spotLightContainerStyle}>
             {spotlight}
           </div>

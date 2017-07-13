@@ -1,7 +1,7 @@
 import React from "react";
 
-export default props =>
-  <div>
+export default props =>{
+  return <div>
     <div
       style={{
         ...imgStyle,
@@ -10,6 +10,7 @@ export default props =>
     />
     <div style={labelStyle}>{props.label}</div>
   </div>;
+}
 
 const imgStyle = {
   height: "9rem",

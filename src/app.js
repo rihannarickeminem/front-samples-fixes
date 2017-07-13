@@ -18,8 +18,8 @@ render(
           <Switch>
             <Route exact path="/" component={HomePage} />
             <Route path="/modals" component={EscapableModalPage} />
-            <Route path="/students/:studentId*" component={StudentsPage} />
-            <Route path="/classrooms" component={ClassroomsPage} />
+            <Route path="/students/:Id*" component={StudentsPage} />
+            <Route path="/classrooms/:Id*" component={ClassroomsPage} />
           </Switch>
         </HashRouter>
     </Provider>,

@@ -44,6 +44,7 @@ const config = {
       },
     ],
   },
+  devtool: 'source-map',
   plugins: [new ExtractTextPlugin('[name].bundle.css')],
 };
 

@@ -4,43 +4,63 @@ import { NavLink } from 'react-router-dom';
 import { HLayout, HLayoutItem, VLayout, VLayoutItem } from 'react-flexbox-layout';
 
 import { fullName } from 'utils/name';
-import { getStudentAvatar } from 'utils/studentAvatar';
+import {
+  getStudentAvatar,
+  getClassroomAvatar,
+} from 'utils/avatar';
+import {
+  students,
+  classrooms,
+  unsuportedAvatarType,
+} from '../../../constants';
+
+function getItemAvatar(itemType, item){
+  switch(true){
+    case itemType === classrooms:
+      return getClassroomAvatar(item)
+    case itemType === students:
+      return getStudentAvatar(item)
+    default:
+      throw unsuportedAvatarType;
+  }
+}
 
 class DashboardLeftBar extends React.Component {
 
   static propTypes = {
-    students: PropTypes.array.isRequired,
+    items: PropTypes.array.isRequired,
+    itemType: PropTypes.string.isRequired,
   };
 
   render() {
-
-    const students = this.props.students;
+    const items = this.props.items;
+    const itemType = this.props.itemType;
     return (
       <div>
-        <h3 style={titleStyle}>Students</h3>
-        {students.map(this._renderStudent)}
+        <h3 style={titleStyle}>{ itemType.charAt(0).toUpperCase() + itemType.slice(1) }</h3>
+        {items.map(item=>this._renderItems(item, itemType))}
       </div>
     )
   }
 
-  _renderStudent(student) {
+  _renderItems(item, itemType) {
     const label = "";
     return (
       <NavLink
-        key={student._id}
-        to={`/students/${student._id}`}
+        key={item._id}
+        to={`/${itemType}/${item._id}`}
         style={entryStyle}
         activeStyle={selectedEntryStyle}
       >
-        <HLayout key={student._id} height="100%" alignItems="middle" gutter={7}>
+        <HLayout key={item._id} height="100%" alignItems="middle" gutter={7}>
           <div
             style={{
-              ...studentAvatarStyle,
-              backgroundImage: `url(${getStudentAvatar(student)})`,
+              ...avatarStyle,
+              backgroundImage: `url(${getItemAvatar(itemType, item)})`,
             }}
           />
-          <HLayoutItem flexGrow style={studentNameStyle}>
-            <span>{fullName(student)}</span>
+          <HLayoutItem flexGrow style={nameStyle}>
+            <span>{fullName(item)}</span>
           </HLayoutItem>
           <span>{label}</span>
         </HLayout>
@@ -75,13 +95,13 @@ const selectedEntryStyle = {
   cursor: "default",
 };
 
-const studentNameStyle = {
+const nameStyle = {
   overflow: "hidden",
   textOverflow: "ellipsis",
   whiteSpace: "nowrap",
 };
 
-const studentAvatarStyle = {
+const avatarStyle = {
   height: "3rem",
   width: "3rem",
   margin: "0 0.6rem",

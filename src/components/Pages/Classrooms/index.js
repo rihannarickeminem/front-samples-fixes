@@ -1,6 +1,7 @@
 import React from 'react';
 
 import NavBar from 'components/NavBar';
+import Dashboard from "components/Dashboard";
 
 const classrooms = [
   { _id: "1", name: "React basics" },
@@ -12,5 +13,6 @@ const classrooms = [
 export default (props) => (
   <div>
     <NavBar />
+    <Dashboard classrooms={classrooms} />
   </div>
 );
